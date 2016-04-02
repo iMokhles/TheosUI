@@ -123,7 +123,6 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"projectCell"];
     NSMutableArray *currentArray = [newProjectsDicts valueForKey:[[newProjectsDicts allKeys] objectAtIndex:indexPath.section]];
     NSDictionary *projectCellDict = [currentArray objectAtIndex:indexPath.row];
-    
     cell.textLabel.text = [projectCellDict objectForKey:@"projectName"];
     cell.detailTextLabel.text = [projectCellDict objectForKey:@"authorName"];
     return cell;
@@ -142,25 +141,43 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSDictionary *projectInfo  = projectsArray[indexPath.row];
+    NSMutableArray *currentArray = [[newProjectsDicts valueForKey:[[newProjectsDicts allKeys] objectAtIndex:indexPath.section]] mutableCopy];
+    NSDictionary *projectCellDict = [currentArray objectAtIndex:indexPath.row];
+    NSDictionary *projectInfo  = projectCellDict;
+    NSMutableDictionary *projectsInfoMTBDictNEW = nil;
     NSString *projectPath = [[TheosProject sharedInstance] projectFolderFromName:[projectInfo objectForKey:@"projectName"]];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSError *error1 = nil;
-        if ([[NSFileManager defaultManager] removeItemAtPath:projectPath error:&error1]) {
-            NSMutableArray *applyChangesArray = projectsArray;
-            
-            [applyChangesArray removeObjectAtIndex:indexPath.row];
-            
-            [[NSUserDefaults standardUserDefaults] setObject:applyChangesArray forKey:@"fileInfoArray"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            [projectsArray removeAllObjects];
-            [self reloadProjects];
-        } else {
-            if (error1) {
-                TUIlog(@"ERROR: %@", error1.localizedDescription);
-            }
-        }
+        BOOL isDirectory = YES;
         
+        if ([[NSFileManager defaultManager] fileExistsAtPath:projectPath isDirectory:&isDirectory]) {
+            
+            if ([[NSFileManager defaultManager] removeItemAtPath:projectPath error:&error1]) {
+                NSMutableArray *applyChangesArray = currentArray;
+                projectsInfoMTBDictNEW = [[NSMutableDictionary alloc] initWithDictionary:newProjectsDicts];
+                
+                if (applyChangesArray.count > 0) {
+                    [applyChangesArray removeObjectAtIndex:indexPath.row];
+                    //[projectsInfoMTBDictNEW setObject:applyChangesArray forKey:[projectInfo objectForKey:@"templateName"]];
+                    [projectsInfoMTBDictNEW removeObjectForKey:[projectInfo objectForKey:@"templateName"]];
+                    [[NSUserDefaults standardUserDefaults] setObject:projectsInfoMTBDictNEW forKey:@"projectsInfoDicts"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    //[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationRight];
+                } else {
+                    [applyChangesArray removeObjectAtIndex:indexPath.row];
+                    [projectsInfoMTBDictNEW setObject:applyChangesArray forKey:[projectInfo objectForKey:@"templateName"]];
+                    [[NSUserDefaults standardUserDefaults] setObject:projectsInfoMTBDictNEW forKey:@"projectsInfoDicts"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
+                }
+                [self reloadProjects];
+            } else {
+                if (error1) {
+                    TUIlog(@"ERROR: %@", error1.localizedDescription);
+                }
+            }
+            
+        }
     }
 }
 
