@@ -3,10 +3,6 @@
 
 theos User Interface to make creating tweaks, apps, libraries etc on iOS easy
 
-<p align="center">
-  <img width="640" src="Screenshot.png"/>
-</p>
-
 Usage
 ------
 
