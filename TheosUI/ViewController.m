@@ -16,6 +16,7 @@
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource> {
     NSMutableDictionary *projectDict;
     NSMutableArray *projectsArray;
+    NSMutableDictionary *newProjectsDicts;
     MBProgressHUD *hud;
 }
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addBarButton;
@@ -60,7 +61,8 @@
 }
 
 - (void)reloadProjects {
-    projectsArray = [[NSUserDefaults standardUserDefaults] objectForKey:@"projectsInfoArray"];
+    newProjectsDicts = [[NSUserDefaults standardUserDefaults] objectForKey:@"projectsInfoDicts"];
+    NSLog(@"%@", newProjectsDicts);
     [self updateTable];
 }
 
@@ -104,35 +106,26 @@
 #pragma mark - TableViewDelegate/TableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [projectsArray count];
+    return [newProjectsDicts count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 10.0f;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    UIView *headerView = [[UIView alloc] init];
-    headerView.backgroundColor = [UIColor clearColor];
-    return headerView;
+    NSArray *projArray = [newProjectsDicts objectForKey:[[newProjectsDicts allKeys] objectAtIndex:section]];
+    
+    return [projArray count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return @"Projects";
+    return [[newProjectsDicts allKeys] objectAtIndex:section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"projectCell"];
-    NSDictionary *projectInfo  = projectsArray[indexPath.section];
+    NSMutableArray *currentArray = [newProjectsDicts valueForKey:[[newProjectsDicts allKeys] objectAtIndex:indexPath.section]];
+    NSDictionary *projectCellDict = [currentArray objectAtIndex:indexPath.row];
     
-    cell.textLabel.text = [projectInfo objectForKey:@"projectName"];
-    cell.detailTextLabel.text = [projectInfo objectForKey:@"templateName"];
+    cell.textLabel.text = [projectCellDict objectForKey:@"projectName"];
+    cell.detailTextLabel.text = [projectCellDict objectForKey:@"authorName"];
     return cell;
 }
 
@@ -149,14 +142,14 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSDictionary *projectInfo  = projectsArray[indexPath.section];
+    NSDictionary *projectInfo  = projectsArray[indexPath.row];
     NSString *projectPath = [[TheosProject sharedInstance] projectFolderFromName:[projectInfo objectForKey:@"projectName"]];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSError *error1 = nil;
         if ([[NSFileManager defaultManager] removeItemAtPath:projectPath error:&error1]) {
             NSMutableArray *applyChangesArray = projectsArray;
             
-            [applyChangesArray removeObjectAtIndex:indexPath.section];
+            [applyChangesArray removeObjectAtIndex:indexPath.row];
             
             [[NSUserDefaults standardUserDefaults] setObject:applyChangesArray forKey:@"fileInfoArray"];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -167,9 +160,6 @@
                 TUIlog(@"ERROR: %@", error1.localizedDescription);
             }
         }
-        
-        
-        
         
     }
 }

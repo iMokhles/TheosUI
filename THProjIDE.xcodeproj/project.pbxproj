@@ -158,7 +158,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 43F2A9371CAEFD3D00A455F0 /* Build configuration list for PBXProject "TheosUI" */;
+			buildConfigurationList = 43F2A9371CAEFD3D00A455F0 /* Build configuration list for PBXProject "THProjIDE" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -347,7 +347,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		43F2A9371CAEFD3D00A455F0 /* Build configuration list for PBXProject "TheosUI" */ = {
+		43F2A9371CAEFD3D00A455F0 /* Build configuration list for PBXProject "THProjIDE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				43F2A9511CAEFD3E00A455F0 /* Debug */,

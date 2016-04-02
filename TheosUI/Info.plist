@@ -43,5 +43,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>TEST</key>
+	<dict>
+		<key>AGAIn</key>
+		<array>
+			<dict/>
+		</array>
+	</dict>
 </dict>
 </plist>

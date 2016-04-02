@@ -17,7 +17,7 @@
                BlueprintIdentifier = "43F2A93B1CAEFD3D00A455F0"
                BuildableName = "TheosUI.app"
                BlueprintName = "TheosUI"
-               ReferencedContainer = "container:TheosUI.xcodeproj">
+               ReferencedContainer = "container:THProjIDE.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
             BlueprintIdentifier = "43F2A93B1CAEFD3D00A455F0"
             BuildableName = "TheosUI.app"
             BlueprintName = "TheosUI"
-            ReferencedContainer = "container:TheosUI.xcodeproj">
+            ReferencedContainer = "container:THProjIDE.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,7 +58,7 @@
             BlueprintIdentifier = "43F2A93B1CAEFD3D00A455F0"
             BuildableName = "TheosUI.app"
             BlueprintName = "TheosUI"
-            ReferencedContainer = "container:TheosUI.xcodeproj">
+            ReferencedContainer = "container:THProjIDE.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,7 +77,7 @@
             BlueprintIdentifier = "43F2A93B1CAEFD3D00A455F0"
             BuildableName = "TheosUI.app"
             BlueprintName = "TheosUI"
-            ReferencedContainer = "container:TheosUI.xcodeproj">
+            ReferencedContainer = "container:THProjIDE.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

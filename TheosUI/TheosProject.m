@@ -95,25 +95,38 @@
 
 - (void)saveProjectInfo:(NSDictionary *)projectInfo {
     
-    NSMutableArray *projectsInfoArray = [[NSUserDefaults standardUserDefaults] objectForKey:@"projectsInfoArray"];
-    NSMutableArray *projectsInfoArrayNEW = nil;
+    NSMutableDictionary *projectsInfoMTBDict = [[NSUserDefaults standardUserDefaults] objectForKey:@"projectsInfoDicts"];
+    NSMutableDictionary *projectsInfoMTBDictNEW = nil;
+    NSMutableArray *projInfoArray = [NSMutableArray new];
     
-    if (!projectsInfoArray) {
-        projectsInfoArray = [[NSMutableArray alloc] init];
-        [projectsInfoArray addObject:projectInfo];
-        [[NSUserDefaults standardUserDefaults] setObject:projectsInfoArray forKey:@"projectsInfoArray"];
+    if (!projectsInfoMTBDict) {
+        projectsInfoMTBDict = [[NSMutableDictionary alloc] init];
+        [projInfoArray addObject:projectInfo];
+        [projectsInfoMTBDict setObject:projInfoArray forKey:[projectInfo objectForKey:@"templateName"]];
+        [[NSUserDefaults standardUserDefaults] setObject:projectsInfoMTBDict forKey:@"projectsInfoDicts"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     } else {
-        projectsInfoArrayNEW = [[NSMutableArray alloc] initWithArray:projectsInfoArray];
-        for (NSDictionary *dictCheck in projectsInfoArray) {
-            NSString *curName = dictCheck[@"projectName"];
-            NSString *curID = dictCheck[@"projectName"];
-            if ([curName isEqualToString:projectInfo[@"projectName"]] || [curID isEqualToString:projectInfo[@"packageID"]]) {
-                return;
+        projectsInfoMTBDictNEW = [[NSMutableDictionary alloc] initWithDictionary:projectsInfoMTBDict];
+        NSMutableArray *currentArray = [projectsInfoMTBDict valueForKey:[projectInfo objectForKey:@"templateName"]];
+        for (NSString *keys in [projectsInfoMTBDict allKeys]) {
+            if ([keys isEqualToString:[projectInfo objectForKey:@"templateName"]]) {
+                NSMutableArray *array = [projectsInfoMTBDict valueForKey:keys];
+                for (NSDictionary *dict in array) {
+                    NSString *curName = dict[@"projectName"];
+                    NSString *curPKGName = dict[@"packageID"];
+                    if ([curName isEqualToString:projectInfo[@"projectName"]] || [curPKGName isEqualToString:projectInfo[@"packageID"]]) {
+                        return;
+                    }
+                }
             }
+            
         }
-        [projectsInfoArrayNEW addObject:projectInfo];
-        [[NSUserDefaults standardUserDefaults] setObject:projectsInfoArrayNEW forKey:@"projectsInfoArray"];
+        [projInfoArray addObjectsFromArray:currentArray];
+        [projInfoArray addObject:projectInfo];
+        
+        
+        [projectsInfoMTBDictNEW setObject:projInfoArray forKey:[projectInfo objectForKey:@"templateName"]];
+        [[NSUserDefaults standardUserDefaults] setObject:projectsInfoMTBDictNEW forKey:@"projectsInfoDicts"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
